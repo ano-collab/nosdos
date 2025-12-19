@@ -3,41 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тест deep links для TokenPocket Wallet</title>
+    <title>Тест deep links для Coinbase Wallet</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 50px; background: #f0f0f0; }
         button { padding: 15px 30px; font-size: 18px; margin: 20px; cursor: pointer; border: none; border-radius: 8px; }
-        .primary { background: #4CAF50; color: white; }
+        .primary { background: #0052FF; color: white; } /* Цвет Coinbase */
         .secondary { background: #2196F3; color: white; }
         .info { max-width: 600px; margin: 0 auto; line-height: 1.6; background: white; padding: 20px; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <h1>Тест открытия kfcgovno.cyou в TokenPocket Wallet</h1>
+    <h1>Тест открытия kfcgovno.cyou в Coinbase Wallet</h1>
     <div class="info">
-        <p><strong>Важно:</strong> Установи TokenPocket из официального источника: <a href="https://www.tokenpocket.pro/en/download/app">tokenpocket.pro</a></p>
-        <p>Если приложение установлено, кнопки должны открыть его и загрузить сайт во встроенном DApp-браузере.</p>
-        <p>Если не открывается — попробуй разные варианты (схемы могут отличаться по версиям приложения).</p>
+        <p><strong>Важно:</strong> Установи официальное приложение Coinbase Wallet (теперь Base) из App Store или Google Play.</p>
+        <p>Рекомендуемый — первый вариант (universal link от Coinbase). Он должен открыть приложение и загрузить сайт внутри.</p>
+        <p>Если не открывается — попробуй другие (схемы могут зависеть от версии приложения).</p>
     </div>
 
-    <button class="primary" onclick="tryOpen('tpdapp://open?params=%7B%22url%22%3A%22https%3A%2F%2Fkfcgovno.cyou%22%7D')">
-        Основной: tpdapp://open (рекомендуется)
+    <button class="primary" onclick="tryOpen('https://go.cb-w.com/dapp?cb_url=https%3A%2F%2Fkfcgovno.cyou')">
+        Основной: Universal link[](https://go.cb-w.com/dapp?...)
     </button><br>
 
-    <button class="secondary" onclick="tryOpen('tpdapp://open?params=%7B%22url%22%3A%22https%3A%2F%2Fkfcgovno.cyou%22%2C%22chain%22%3A%22solana%22%7D')">
-        tpdapp:// с chain=solana
+    <button class="secondary" onclick="tryOpen('cbwallet://dapp?url=https%3A%2F%2Fkfcgovno.cyou')">
+        Custom scheme: cbwallet://dapp?url=...
     </button><br>
 
-    <button class="secondary" onclick="tryOpen('tpoutside://pull.activity?param=%7B%22url%22%3A%22https%3A%2F%2Fkfcgovno.cyou%22%7D')">
-        Старый вариант: tpoutside://
+    <button class="secondary" onclick="tryOpen('coinbase://dapp?url=https%3A%2F%2Fkfcgovno.cyou')">
+        Старый вариант: coinbase://dapp?url=...
     </button><br>
 
-    <button class="secondary" onclick="tryOpen('tokenpocket://open?url=https%3A%2F%2Fkfcgovno.cyou')">
-        tokenpocket://open?url=...
-    </button><br>
-
-    <button class="secondary" onclick="tryOpen('tpwallet://open?url=https%3A%2F%2Fkfcgovno.cyou')">
-        tpwallet://open?url=...
+    <button class="secondary" onclick="tryOpen('cbwallet://open?url=https%3A%2F%2Fkfcgovno.cyou')">
+        cbwallet://open?url=...
     </button><br>
 
     <button onclick="window.location.href='https://kfcgovno.cyou'">Обычное открытие в браузере (fallback)</button>
@@ -47,19 +43,19 @@
             console.log("Пытаемся открыть:", url);
             window.location.href = url;
 
-            // Fallback через 2 секунды, если приложение не открылось
+            // Fallback через 3 секунды
             setTimeout(() => {
-                if (confirm('TokenPocket не открылся? Открыть сайт в обычном браузере?')) {
+                if (confirm('Coinbase Wallet не открылся? Открыть в обычном браузере?')) {
                     window.location.href = 'https://kfcgovno.cyou';
                 }
-            }, 2000);
+            }, 3000);
         }
     </script>
 
     <div class="info">
-        <p>Тестируй на реальном устройстве с TokenPocket.</p>
-        <p>Если работает — сайт загрузится внутри приложения (в DApp-браузере), и ты сможешь подключить кошелёк.</p>
-        <p>TokenPocket полностью совместим с Phantom-протоколом на Solana, так что connect wallet должен работать без доработок.</p>
+        <p>Тестируй на реальном устройстве с установленным приложением.</p>
+        <p>Если universal link сработает — сайт загрузится внутри Coinbase Wallet, и connect wallet будет доступен сразу.</p>
+        <p>Coinbase Wallet поддерживает Solana полноценно, так что ваш сканер должен работать без проблем.</p>
     </div>
 </body>
 </html>
