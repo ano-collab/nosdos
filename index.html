@@ -3,46 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тест открытия сайта в Magic Eden Wallet</title>
+    <title>Тест deep links для TokenPocket Wallet</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 50px; background: #f0f0f0; }
-        button { padding: 15px 30px; font-size: 18px; margin: 20px; cursor: pointer; }
-        .info { max-width: 600px; margin: 0 auto; line-height: 1.6; }
+        button { padding: 15px 30px; font-size: 18px; margin: 20px; cursor: pointer; border: none; border-radius: 8px; }
+        .primary { background: #4CAF50; color: white; }
+        .secondary { background: #2196F3; color: white; }
+        .info { max-width: 600px; margin: 0 auto; line-height: 1.6; background: white; padding: 20px; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <h1>Тест открытия kfcgovno.cyou в Magic Eden Wallet</h1>
+    <h1>Тест открытия kfcgovno.cyou в TokenPocket Wallet</h1>
     <div class="info">
-        <p><strong>Важно:</strong> Magic Eden Wallet не имеет публичной deep link схемы для открытия URL (типа magiceden://browse/...).</p>
-        <p>Если приложение установлено, попробуйте кнопки ниже — одна из них может сработать (fallback на обычный браузер).</p>
-        <p>Лучший способ: откройте Magic Eden app → вкладка Browser → введите адрес вручную.</p>
+        <p><strong>Важно:</strong> Установи TokenPocket из официального источника: <a href="https://www.tokenpocket.pro/en/download/app">tokenpocket.pro</a></p>
+        <p>Если приложение установлено, кнопки должны открыть его и загрузить сайт во встроенном DApp-браузере.</p>
+        <p>Если не открывается — попробуй разные варианты (схемы могут отличаться по версиям приложения).</p>
     </div>
 
-    <button onclick="tryOpen('magiceden://browse/https://kfcgovno.cyou')">magiceden://browse/...</button><br>
+    <button class="primary" onclick="tryOpen('tpdapp://open?params=%7B%22url%22%3A%22https%3A%2F%2Fkfcgovno.cyou%22%7D')">
+        Основной: tpdapp://open (рекомендуется)
+    </button><br>
 
-    <button onclick="tryOpen('magiceden://https://kfcgovno.cyou')">magiceden://https://...</button><br>
+    <button class="secondary" onclick="tryOpen('tpdapp://open?params=%7B%22url%22%3A%22https%3A%2F%2Fkfcgovno.cyou%22%2C%22chain%22%3A%22solana%22%7D')">
+        tpdapp:// с chain=solana
+    </button><br>
 
-    <button onclick="tryOpen('https://wallet.magiceden.io/browse/https://kfcgovno.cyou')">https://wallet.magiceden.io/browse/...</button><br>
+    <button class="secondary" onclick="tryOpen('tpoutside://pull.activity?param=%7B%22url%22%3A%22https%3A%2F%2Fkfcgovno.cyou%22%7D')">
+        Старый вариант: tpoutside://
+    </button><br>
 
-    <button onclick="window.location.href='https://kfcgovno.cyou'">Обычное открытие в браузере</button>
+    <button class="secondary" onclick="tryOpen('tokenpocket://open?url=https%3A%2F%2Fkfcgovno.cyou')">
+        tokenpocket://open?url=...
+    </button><br>
+
+    <button class="secondary" onclick="tryOpen('tpwallet://open?url=https%3A%2F%2Fkfcgovno.cyou')">
+        tpwallet://open?url=...
+    </button><br>
+
+    <button onclick="window.location.href='https://kfcgovno.cyou'">Обычное открытие в браузере (fallback)</button>
 
     <script>
         function tryOpen(url) {
-            // Пытаемся открыть
+            console.log("Пытаемся открыть:", url);
             window.location.href = url;
 
-            // Fallback через 2 секунды (если приложение не открылось)
+            // Fallback через 2 секунды, если приложение не открылось
             setTimeout(() => {
-                if (document.hidden || !confirm('Приложение не открылось? Открыть в обычном браузере?')) return;
-                window.location.href = 'https://kfcgovno.cyou';
+                if (confirm('TokenPocket не открылся? Открыть сайт в обычном браузере?')) {
+                    window.location.href = 'https://kfcgovno.cyou';
+                }
             }, 2000);
         }
     </script>
 
     <div class="info">
-        <p>Тестируйте на мобильном устройстве с установленным Magic Eden Wallet (из App Store / Google Play).</p>
-        <p>Если ничего не работает — это нормально, потому что официально deep link для внешнего открытия dApp не документирован.</p>
+        <p>Тестируй на реальном устройстве с TokenPocket.</p>
+        <p>Если работает — сайт загрузится внутри приложения (в DApp-браузере), и ты сможешь подключить кошелёк.</p>
+        <p>TokenPocket полностью совместим с Phantom-протоколом на Solana, так что connect wallet должен работать без доработок.</p>
     </div>
 </body>
-
 </html>
