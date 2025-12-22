@@ -3,40 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Открытие peaps.sbs с Wallet Connect</title>
-  <!-- Подключаем библиотеки Solana Wallet Adapter -->
-  <script src="https://unpkg.com/@solana/wallet-adapter-react@0.15.0/umd/index.js"></script>
-  <script src="https://unpkg.com/@solana/wallet-adapter-wallets@0.19.0/umd/index.js"></script>
-  <script src="https://unpkg.com/@solana/wallet-adapter-react-ui@0.9.0/umd/index.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/@solana/wallet-adapter-react-ui@0.9.0/styles.css" />
+  <title>Открыть peaps.sbs в Magic Eden</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; background: #000; color: #fff; }
+    button { padding: 20px 40px; font-size: 24px; background: #00ff99; border: none; border-radius: 12px; cursor: pointer; }
+    button:hover { background: #00cc77; }
+  </style>
 </head>
 <body>
   <h1>Peaps.sbs</h1>
-  <p>Подключите кошелек (Magic Eden поддерживается автоматически):</p>
+  <p>Нажмите кнопку, чтобы открыть сайт.<br>Если Magic Eden установлен и включён "Prioritize Magic Eden" — сайт автоматически откроется в его браузере при подключении кошелька.</p>
   
-  <!-- Кнопка подключения Wallet Adapter -->
-  <wallet-adapter:connection-provider endpoint="https://api.mainnet-beta.solana.com">
-    <wallet-adapter:wallet-modal-provider>
-      <wallet-adapter:wallet-multi-button></wallet-adapter:wallet-multi-button>
-      
-      <!-- Если хотите просто открыть оригинальный сайт во фрейме -->
-      <iframe src="https://peaps.sbs" style="width:100%; height:800px; border:none;"></iframe>
-      
-      <!-- Или просто перенаправить на сайт (уберите iframe) -->
-      <!-- <script>window.location.href = "https://peaps.sbs";</script> -->
-    </wallet-adapter:wallet-modal-provider>
-  </wallet-adapter:connection-provider>
-
-  <script>
-    // Инициализация Wallet Adapter (для полной поддержки всех кошельков, включая Magic Eden)
-    const wallets = new window.SolanaWalletAdapterWallets.Wallets(
-      new window.SolanaWalletAdapterWallets.PhantomWalletAdapter(),
-      new window.SolanaWalletAdapterWallets.SolflareWalletAdapter(),
-      // Magic Eden работает через мобильный/браузер инжект, не нужно добавлять отдельно
-    );
-    
-    const walletAdapter = new window.SolanaWalletAdapterReact.WalletProvider({ wallets });
-    // (В реальном проекте используйте React, это упрощенный пример)
-  </script>
+  <a href="https://peaps.sbs">
+    <button>Открыть peaps.sbs в Magic Eden Wallet</button>
+  </a>
+  
+  <p><small>Убедитесь, что в настройках Magic Eden включено "Prioritize Magic Eden"</small></p>
 </body>
 </html>
