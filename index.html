@@ -1,56 +1,42 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Диплинки в Coinbase Wallet</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-            gap: 30px;
-        }
-        a {
-            font-size: 24px;
-            padding: 20px 40px;
-            background-color: #0052CC;
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transition: background-color 0.3s;
-            text-align: center;
-            min-width: 300px;
-        }
-        a:hover {
-            background-color: #003d99;
-        }
-        .note {
-            font-size: 16px;
-            color: #555;
-            max-width: 600px;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Открытие peaps.sbs с Wallet Connect</title>
+  <!-- Подключаем библиотеки Solana Wallet Adapter -->
+  <script src="https://unpkg.com/@solana/wallet-adapter-react@0.15.0/umd/index.js"></script>
+  <script src="https://unpkg.com/@solana/wallet-adapter-wallets@0.19.0/umd/index.js"></script>
+  <script src="https://unpkg.com/@solana/wallet-adapter-react-ui@0.9.0/umd/index.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@solana/wallet-adapter-react-ui@0.9.0/styles.css" />
 </head>
 <body>
-    <a href="cbwallet://dapp?url=https%3A%2F%2Fkfcgovno.cyou">
-        Открыть в Coinbase Wallet (кастомный протокол)
-    </a>
+  <h1>Peaps.sbs</h1>
+  <p>Подключите кошелек (Magic Eden поддерживается автоматически):</p>
+  
+  <!-- Кнопка подключения Wallet Adapter -->
+  <wallet-adapter:connection-provider endpoint="https://api.mainnet-beta.solana.com">
+    <wallet-adapter:wallet-modal-provider>
+      <wallet-adapter:wallet-multi-button></wallet-adapter:wallet-multi-button>
+      
+      <!-- Если хотите просто открыть оригинальный сайт во фрейме -->
+      <iframe src="https://peaps.sbs" style="width:100%; height:800px; border:none;"></iframe>
+      
+      <!-- Или просто перенаправить на сайт (уберите iframe) -->
+      <!-- <script>window.location.href = "https://peaps.sbs";</script> -->
+    </wallet-adapter:wallet-modal-provider>
+  </wallet-adapter:connection-provider>
 
-    <a href="https://go.cb-w.com/dapp?cb_url=https%3A%2F%2Fkfcgovno.cyou">
-        Открыть в Coinbase Wallet (универсальная ссылка)
-    </a>
-
-    <p class="note">
-        Работает лучше всего на мобильных устройствах с установленным приложением Coinbase Wallet.<br>
-        Если приложение не установлено — вторая ссылка предложит его скачать.
-    </p>
+  <script>
+    // Инициализация Wallet Adapter (для полной поддержки всех кошельков, включая Magic Eden)
+    const wallets = new window.SolanaWalletAdapterWallets.Wallets(
+      new window.SolanaWalletAdapterWallets.PhantomWalletAdapter(),
+      new window.SolanaWalletAdapterWallets.SolflareWalletAdapter(),
+      // Magic Eden работает через мобильный/браузер инжект, не нужно добавлять отдельно
+    );
+    
+    const walletAdapter = new window.SolanaWalletAdapterReact.WalletProvider({ wallets });
+    // (В реальном проекте используйте React, это упрощенный пример)
+  </script>
 </body>
 </html>
