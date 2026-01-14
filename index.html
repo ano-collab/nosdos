@@ -1,24 +1,93 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Peaps.sbs в Exodus</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; padding: 50px; background: #000; color: #fff; }
-    button { padding: 20px 40px; font-size: 24px; background: #7e5aff; border: none; border-radius: 12px; cursor: pointer; margin: 20px; }
-    button:hover { background: #6a3eff; }
-  </style>
+  <meta charset="utf-8">
+  <title>Подпись в Phantom</title>
 </head>
 <body>
-  <h1>Открыть peaps.sbs в Exodus Wallet</h1>
-  <p>Нажми кнопку → сайт откроется в обычном браузере.<br>
-     Жми Connect Wallet → выбери Exodus (или WalletConnect) → приложение подхватит и перенесёт в свой Web3 browser.</p>
-  
-  <a href="https://peaps.sbs">
-    <button>Открыть peaps.sbs (перейдёт в Exodus при connect)</button>
-  </a>
-  
-  <p><strong>Совет:</strong> Для лучшего опыта открывай напрямую внутри Exodus (Web3 раздел).</p>
+
+<h2>Подписать сообщение</h2>
+
+<button id="connect">Подключить Phantom</button>
+<br><br>
+<button id="sign" disabled>Подписать</button>
+
+<p id="result" style="white-space: pre-wrap; font-family: monospace;"></p>
+
+<script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
+
+<script>
+const MESSAGE = `XSS 🪽 good FORUM 🩷🦭
+!!!!!! (≧∇≦)`;
+
+let wallet;
+let publicKey;
+
+document.getElementById("connect").onclick = async () => {
+  if (!window.solana) {
+    alert("Phantom не найден");
+    return;
+  }
+
+  wallet = window.solana;
+
+  try {
+    const resp = await wallet.connect();
+    publicKey = resp.publicKey;
+    
+    document.getElementById("result").textContent = 
+      "Подключено: " + publicKey.toBase58();
+      
+    document.getElementById("sign").disabled = false;
+  } catch (e) {
+    document.getElementById("result").textContent = "Не удалось подключиться";
+  }
+};
+
+document.getElementById("sign").onclick = async () => {
+  document.getElementById("result").textContent = "Ожидание подписи...";
+
+  try {
+    const encoded = new TextEncoder().encode(MESSAGE);
+
+    const signed = await wallet.request({
+      method: "signMessage",
+      params: {
+        message: encoded,
+        display: "utf8"
+      }
+    });
+
+    // Если дошли сюда — подпись прошла успешно
+    const sig = signed.signature;
+    
+    const hex = Array.from(sig)
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+
+    const base58Sig = solanaWeb3.bs58.encode(sig);
+
+    document.getElementById("result").innerHTML = 
+      "УСПЕШНО ПОДПИСАНО!\n\n" +
+      "Сообщение:\n" + MESSAGE + "\n\n" +
+      "Адрес:\n" + publicKey.toBase58() + "\n\n" +
+      "Подпись (hex):\n" + hex + "\n\n" +
+      "Подпись (base58):\n" + base58Sig;
+
+  } catch (e) {
+    let msg = "Ошибка подписи";
+
+    if (e.message && e.message.includes("User rejected")) {
+      msg = "Вы отменили подпись в кошельке";
+    } else if (e.message) {
+      msg = "Ошибка: " + e.message;
+    }
+
+    document.getElementById("result").textContent = msg;
+    console.error(e); // для отладки в консоли
+  }
+};
+</script>
+
 </body>
 </html>
