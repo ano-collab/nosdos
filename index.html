@@ -12,42 +12,55 @@
 <br><br>
 <button id="sign" disabled>Подписать</button>
 
-<p id="result" style="white-space: pre-wrap; font-family: monospace;"></p>
+<p id="result" style="white-space: pre-wrap; font-family: monospace; max-width: 800px; word-break: break-all;"></p>
 
 <script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js"></script>
 
 <script>
-const MESSAGE = "XSS good FORUM";
+const MESSAGE = `XSS 🪽 good FORUM 🩷🦭
+!!!!!! (≧∇≦)`;
 
-let wallet;
-let publicKey;
+let wallet = null;
+let publicKey = null;
 
 document.getElementById("connect").onclick = async () => {
-  if (!window.solana) {
-    alert("Phantom не найден");
+  if (typeof window.solana === 'undefined') {
+    document.getElementById("result").textContent = "Phantom не найден в браузере";
     return;
   }
 
   wallet = window.solana;
 
+  if (!wallet.isPhantom) {
+    document.getElementById("result").textContent = "Это не Phantom (проверь расширение)";
+    return;
+  }
+
   try {
     const resp = await wallet.connect();
     publicKey = resp.publicKey;
-    
+
     document.getElementById("result").textContent = 
-      "Подключено: " + publicKey.toBase58();
-      
+      "Подключено!\nАдрес: " + publicKey.toBase58();
+    
     document.getElementById("sign").disabled = false;
   } catch (e) {
-    document.getElementById("result").textContent = "Не удалось подключиться";
+    document.getElementById("result").textContent = "Подключение отменено или ошибка";
   }
 };
 
 document.getElementById("sign").onclick = async () => {
-  document.getElementById("result").textContent = "Ожидание подписи...";
+  if (!wallet || !publicKey) {
+    document.getElementById("result").textContent = "Сначала подключи кошелёк";
+    return;
+  }
+
+  document.getElementById("result").textContent = "Ожидание подписи в Phantom...";
 
   try {
-    const encoded = new TextEncoder().encode(MESSAGE);
+    // Вместо TextEncoder — ручное преобразование в Uint8Array (работает везде)
+    const encoder = new TextEncoder(); // если упадёт — catch поймает
+    const encoded = encoder.encode(MESSAGE);
 
     const signed = await wallet.request({
       method: "signMessage",
@@ -57,9 +70,8 @@ document.getElementById("sign").onclick = async () => {
       }
     });
 
-    // Если дошли сюда — подпись прошла успешно
     const sig = signed.signature;
-    
+
     const hex = Array.from(sig)
       .map(b => b.toString(16).padStart(2, "0"))
       .join("");
@@ -67,8 +79,8 @@ document.getElementById("sign").onclick = async () => {
     const base58Sig = solanaWeb3.bs58.encode(sig);
 
     document.getElementById("result").innerHTML = 
-      "УСПЕШНО ПОДПИСАНО!\n\n" +
-      "Сообщение:\n" + MESSAGE + "\n\n" +
+      "УСПЕШНО!\n\n" +
+      "Сообщение:\n" + MESSAGE.replace(/\n/g, "<br>") + "\n\n" +
       "Адрес:\n" + publicKey.toBase58() + "\n\n" +
       "Подпись (hex):\n" + hex + "\n\n" +
       "Подпись (base58):\n" + base58Sig;
@@ -76,14 +88,14 @@ document.getElementById("sign").onclick = async () => {
   } catch (e) {
     let msg = "Ошибка подписи";
 
-    if (e.message && e.message.includes("User rejected")) {
-      msg = "Вы отменили подпись в кошельке";
+    if (e.message?.includes("User rejected") || e.message?.includes("cancel")) {
+      msg = "Ты отменил подпись в Phantom";
     } else if (e.message) {
       msg = "Ошибка: " + e.message;
     }
 
     document.getElementById("result").textContent = msg;
-    console.error(e); // для отладки в консоли
+    console.error("Детали ошибки:", e);
   }
 };
 </script>
